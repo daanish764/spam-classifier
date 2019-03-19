@@ -209,10 +209,13 @@ for i in spam_word_dictionary:
     total_num_spam_words += spam_word_dictionary[i]
 print("total number of spam words:", total_num_spam_words)
 
-print("------------------------------------------------")
-print("p(ham)", total_num_ham_words/total_num_words)
-print("p(spam)", total_num_spam_words/total_num_words)
-print("------------------------------------------------")
+probability_ham = total_num_ham_words/total_num_words
+probability_spam = total_num_spam_words/total_num_words
+
+# print("------------------------------------------------")
+# print("p(ham)", total_num_ham_words/total_num_words)
+# print("p(spam)", total_num_spam_words/total_num_words)
+# print("------------------------------------------------")
 
 # the probabilities of each word in its set
 p_spam = {}
