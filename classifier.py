@@ -7,8 +7,8 @@ from math import log10
 
 from spam_detection import word_dictionary, ham_word_dictionary, spam_word_dictionary, p_ham, p_spam, probability_ham, probability_spam
 
-print(probability_ham)
-print(probability_spam)
+# print(probability_ham)
+# print(probability_spam)
 # print(len(word_dictionary))
 # print(len(ham_word_dictionary))
 # print(len(spam_word_dictionary))
@@ -37,6 +37,10 @@ for i in testing_files:
 def print_result(file_summary):
     f = open("baseline-result.txt", "w+")
 
+    # calculate accuracy of the classification
+    wrongCounter = 0
+    rightCounter = 0
+
     counter = 0
     for file_name in file_summary:
         counter += 1
@@ -59,7 +63,19 @@ def print_result(file_summary):
         f.write("  ")
         f.write(str(file_summary[file_name]["result"]))
         f.write("\n")
-        
+
+        if file_summary[file_name]["result"] == "wrong":
+            wrongCounter += 1
+        elif file_summary[file_name]["result"] == "right":
+            rightCounter += 1
+        else:
+            print("ERROR")
+            break
+    accuracy = rightCounter/(rightCounter + wrongCounter)
+    print("--------------------------accurracy--------------------------")
+    print(accuracy*100, ' % ')
+    print("--------------------------accurracy--------------------------")
+
     f.close()
 
 

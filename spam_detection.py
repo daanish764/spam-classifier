@@ -193,21 +193,21 @@ for i in word_dictionary:
     # print(i, ' ' , word_dictionary[i])
     total_num_words += word_dictionary[i]
 
-print("total number of words:", total_num_words)
+# print("total number of words:", total_num_words)
 
 
 total_num_ham_words = 0
 for i in ham_word_dictionary:
     # print(i, ' ' , ham_word_dictionary[i])
     total_num_ham_words += ham_word_dictionary[i]
-print("total number of ham words:", total_num_ham_words)
+# print("total number of ham words:", total_num_ham_words)
 
 
 total_num_spam_words = 0
 for i in spam_word_dictionary:
     # print(i, ' ' , ham_word_dictionary[i])
     total_num_spam_words += spam_word_dictionary[i]
-print("total number of spam words:", total_num_spam_words)
+# print("total number of spam words:", total_num_spam_words)
 
 probability_ham = total_num_ham_words/total_num_words
 probability_spam = total_num_spam_words/total_num_words
