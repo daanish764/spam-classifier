@@ -145,7 +145,7 @@ for file in testing_files:
     
     if file.find("ham") != -1:
         actual_classification = "ham"
-    if i.find("spam") != -1:
+    if file.find("spam") != -1:
         actual_classification = "spam"
 
     result = "wrong"
