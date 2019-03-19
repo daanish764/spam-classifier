@@ -34,7 +34,36 @@ for i in testing_files:
     if i.find("spam") != -1:
         spam_testing_files.append(i)
 
-def getWordAndFrequencies(file_path):
+def print_result(file_summary):
+    f = open("baseline-result.txt", "w+")
+
+    counter = 0
+    for file_name in file_summary:
+        counter += 1
+        print(counter, end="  ")
+        print(file_name, end="  ")
+        print(file_summary[file_name]["classification"], end="  ")
+        print(file_summary[file_name]["ham_score"], end="  ")
+        print(file_summary[file_name]["spam_score"], end="  ")
+        print(file_summary[file_name]["result"])
+        
+        f.write(str(counter))
+        f.write("  ")
+        f.write(str(file_name))
+        f.write("  ")
+        f.write(str(file_summary[file_name]["classification"]))
+        f.write("  ")
+        f.write(str(file_summary[file_name]["ham_score"]))
+        f.write("  ")
+        f.write(str(file_summary[file_name]["spam_score"]))
+        f.write("  ")
+        f.write(str(file_summary[file_name]["result"]))
+        f.write("\n")
+        
+    f.close()
+
+
+def getWords(file_path):
     result_words = []
 
     f = open(file_path, 'r', encoding="latin-1")
@@ -80,7 +109,7 @@ def getWordAndFrequencies(file_path):
 file_summary = {}
 for file in testing_files:
     path_to_file = os.path.join(testing_path, file)
-    words = getWordAndFrequencies(path_to_file)
+    words = getWords(path_to_file)
 
     classification = ""
     actual_classification = ""
@@ -103,9 +132,9 @@ for file in testing_files:
     if i.find("spam") != -1:
         actual_classification = "spam"
 
-    result = False
+    result = "wrong"
     if actual_classification == classification:
-        result = True
+        result = "right"
 
     # lets make a file summary storing necessary info like ham score, spam score, .. etc so it can be easily outputted
     file_summary[file] = {}
@@ -115,3 +144,5 @@ for file in testing_files:
     file_summary[file]['actual_classification'] = actual_classification
     file_summary[file]['result'] = result
 
+
+print_result(file_summary)
