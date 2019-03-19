@@ -214,7 +214,7 @@ print("p(ham)", total_num_ham_words/total_num_words)
 print("p(spam)", total_num_spam_words/total_num_words)
 print("------------------------------------------------")
 
-
+# the probabilities of each word in its set
 p_spam = {}
 p_ham = {}
 p_word = {}
@@ -235,5 +235,5 @@ for k in word_dictionary:
 
 word_dictionary = alphabetical_sort(word_dictionary)
 
-
-print_result(word_dictionary, ham_word_dictionary, spam_word_dictionary, p_ham, p_spam)
+if __name__ == "__main__":
+    print_result(word_dictionary, ham_word_dictionary, spam_word_dictionary, p_ham, p_spam)
