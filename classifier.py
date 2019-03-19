@@ -3,6 +3,7 @@ from os import listdir
 from os.path import isfile, join
 from os import walk
 import re
+from math import log10
 
 from spam_detection import word_dictionary, ham_word_dictionary, spam_word_dictionary, p_ham, p_spam, probability_ham, probability_spam
 
@@ -66,6 +67,12 @@ def getWordAndFrequencies(file_path):
                 else:
                     result_words[word] = 1
                 '''
+                ''' # I do not know if we allow for multiple words to show
+                if word in result_words:
+                    continue
+                else:
+                    result_words.append(word)
+                '''
                 result_words.append(word)
     f.close()
     return result_words
@@ -75,14 +82,36 @@ for file in testing_files:
     path_to_file = os.path.join(testing_path, file)
     words = getWordAndFrequencies(path_to_file)
 
-
-    probability_email_spam = 0
-    probability_email_ham = 0
+    classification = ""
+    actual_classification = ""
+    probability_email_spam = log10(probability_ham)
+    probability_email_ham = log10(probability_spam)
     for word in words:
         if word not in word_dictionary:
             continue
         # need to calculate probabilities
+        probability_email_spam += log10(p_spam[word])
+        probability_email_ham += log10(p_ham[word])
+
+    if probability_email_spam >= probability_email_ham:
+        classification = "spam"
+    else:
+        classification = "ham"
+    
+    if file.find("ham") != -1:
+        actual_classification = "ham"
+    if i.find("spam") != -1:
+        actual_classification = "spam"
+
+    result = False
+    if actual_classification == classification:
+        result = True
+
     # lets make a file summary storing necessary info like ham score, spam score, .. etc so it can be easily outputted
     file_summary[file] = {}
-    file_summary[file][]
-    print(words)
+    file_summary[file]['spam_score'] = probability_email_spam
+    file_summary[file]['ham_score'] = probability_email_ham
+    file_summary[file]['classification'] = classification
+    file_summary[file]['actual_classification'] = actual_classification
+    file_summary[file]['result'] = result
+
