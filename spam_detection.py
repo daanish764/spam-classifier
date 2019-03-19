@@ -11,6 +11,47 @@ dir_path = os.path.dirname(os.path.realpath(__file__))
 training_path = os.path.join(dir_path, 'train')
 
 
+'''
+takes in a dictionary of key and vlues (words and frequencies)
+and return dictionary with words in alphabetical order
+'''
+def alphabetical_sort(dictionary):
+    result = {}
+    dictionary.keys()
+    sorted(dictionary.keys())
+    for key in sorted(dictionary.keys()) :
+        result[key] = dictionary[key]
+
+    return result
+
+
+def print_result(word_dict, ham_dict, spam_dict, p_ham, p_spam):
+    f = open("model.txt", "w+")
+    counter = 0
+    for word in word_dict:
+        counter += 1
+        print(counter, end="  ")
+        print(word, end="  ")
+        print(ham_dict[word], end="  ")
+        print(p_ham[word], end="  ")
+        print(spam_dict[word], end="  ")
+        print(p_spam[word])
+
+        f.write(str(counter))
+        f.write("  ")
+        f.write(str(word))
+        f.write("  ")
+        f.write(str(ham_dict[word]))
+        f.write("  ")
+        f.write(str(p_ham[word]))
+        f.write("  ")
+        f.write(str(spam_dict[word]))
+        f.write("  ")
+        f.write(str(p_spam[word]))
+        f.write("\n")
+    f.close()
+
+
 training_files = []
 ham_training_files = []
 spam_training_files = []
@@ -70,6 +111,12 @@ for file in ham_training_files:
                     ham_word_dictionary[word] = 1
 
 
+                # make word is also added to spam if it does exist
+                # and with 0 probability
+                if word not in spam_word_dictionary:
+                    spam_word_dictionary[word] = 0
+
+
                 # print(word_counter, end=". ")
                 # print(word, end=" |")
                 # print(len(word))
@@ -117,6 +164,10 @@ for file in spam_training_files:
                 else:
                     spam_word_dictionary[word] = 1
 
+                # make word is also added to ham if it does exist
+                # and with 0 probability
+                if word not in ham_word_dictionary:
+                    ham_word_dictionary[word] = 0
 
                 # print(word_counter, end=". ")
                 # print(word, end=" |")
@@ -130,9 +181,12 @@ for file in spam_training_files:
 
     counter += 1
 
-p_spam = {}
-p_ham = {}
-p_word = {}
+
+#print("len all = ", len(word_dictionary))
+#print("len spam = ", len(spam_word_dictionary))
+#print("len ham = ", len(ham_word_dictionary))
+
+
 
 total_num_words = 0
 for i in word_dictionary:
@@ -161,13 +215,25 @@ print("p(spam)", total_num_spam_words/total_num_words)
 print("------------------------------------------------")
 
 
+p_spam = {}
+p_ham = {}
+p_word = {}
+
+number_of_words = len(word_dictionary)
+# and len(word_dictionary) = len(ham_word_dictionary) =  len(spam_word_dictionary)
+# because we inserted every word into the other data category and assigned 0 if it did not exist
+
 for i in ham_word_dictionary:
-    p_ham[i] = ham_word_dictionary[i]/total_num_ham_words
-    # print(i, '|', p_ham[i])
+    p_ham[i] = (ham_word_dictionary[i]+0.5)/(total_num_ham_words+0.5*number_of_words)
 
 for j in spam_word_dictionary:
-    p_spam[j] = spam_word_dictionary[j]/total_num_spam_words
-    # print(i, '|', p_ham[i])
+    p_spam[j] = (spam_word_dictionary[j]+0.5)/(total_num_spam_words+0.5*number_of_words)
 
 for k in word_dictionary:
-    p_word[k] = word_dictionary[k]/total_num_words
+    p_word[k] = (word_dictionary[k]+0.5)/(total_num_words+0.5*number_of_words)
+
+
+word_dictionary = alphabetical_sort(word_dictionary)
+
+
+print_result(word_dictionary, ham_word_dictionary, spam_word_dictionary, p_ham, p_spam)
