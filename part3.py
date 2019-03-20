@@ -371,9 +371,7 @@ def print_result(file_summary):
             wrongCounter += 1
         elif file_summary[file_name]["result"] == "right":
             rightCounter += 1
-        else:
-            print("ERROR")
-            break
+
     accuracy = rightCounter/(rightCounter + wrongCounter)
     print("--------------------------accurracy--------------------------")
     print(accuracy*100, ' % ')
@@ -424,7 +422,11 @@ def getWords(file_path):
                 result_words.append(word)
     f.close()
     return result_words
-        
+
+# is confusion matrix
+
+confusion = [[1,2],[3,4]]
+
 file_summary = {}
 for file in testing_files:
     path_to_file = os.path.join(testing_path, file)
@@ -455,6 +457,22 @@ for file in testing_files:
     if actual_classification == classification:
         result = "right"
 
+    # true positive
+    if actual_classification=="spam" and classification=="spam":
+        confusion[0][0] += 1
+    
+    # true negative 
+    if actual_classification=="ham" and classification=="ham":
+        confusion[1][1] += 1
+
+    # false positive
+    if classification=="spam" and actual_classification=="ham":
+        confusion[0][1] +=1
+
+    # false negative
+    if classification=="ham" and actual_classification=="spam":
+        confusion[1][0] +=1
+    
     # lets make a file summary storing necessary info like ham score, spam score, .. etc so it can be easily outputted
     file_summary[file] = {}
     file_summary[file]['spam_score'] = probability_email_spam
@@ -465,3 +483,9 @@ for file in testing_files:
 
 
 print_result(file_summary)
+
+print("confusion matrix")
+print('---------------')
+for row in confusion:
+    print('| %4d | %4d |' %(row[0], row[1])) 
+print('---------------')
