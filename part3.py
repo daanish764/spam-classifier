@@ -425,7 +425,7 @@ def getWords(file_path):
 
 # is confusion matrix
 
-confusion = [[1,2],[3,4]]
+confusion = [[0,0],[0,0]]
 
 file_summary = {}
 for file in testing_files:
@@ -472,7 +472,7 @@ for file in testing_files:
     # false negative
     if classification=="ham" and actual_classification=="spam":
         confusion[1][0] +=1
-    
+
     # lets make a file summary storing necessary info like ham score, spam score, .. etc so it can be easily outputted
     file_summary[file] = {}
     file_summary[file]['spam_score'] = probability_email_spam
