@@ -315,6 +315,7 @@ print_model(word_dictionary, ham_word_dictionary, spam_word_dictionary, p_ham, p
 
 
 print("part3.py > Running Naive Bayes Classifier model")
+print("-----------------------------------------------------------")
 
 from math import log10
 
@@ -373,9 +374,9 @@ def print_result(file_summary):
             rightCounter += 1
 
     accuracy = rightCounter/(rightCounter + wrongCounter)
-    print("--------------------------accurracy--------------------------")
-    print(accuracy*100, ' % ')
-    print("--------------------------accurracy--------------------------")
+    #print("--------------------------accurracy--------------------------")
+    #print(accuracy*100, ' % ')
+    #print("--------------------------accurracy--------------------------")
 
     f.close()
 
@@ -489,3 +490,25 @@ print('---------------')
 for row in confusion:
     print('| %4d | %4d |' %(row[0], row[1])) 
 print('---------------')
+
+true_positive = confusion[0][0]
+false_positive = confusion[0][1]
+false_negative = confusion[1][0]
+true_negative = confusion[1][1]
+
+
+total_emails = confusion[0][0] + confusion[0][1] + confusion[1][0] + confusion[1][1]
+correctly_id_emails = confusion[0][0] + confusion[1][1]
+
+accuracy = correctly_id_emails/total_emails
+print("accuracy >> ", correctly_id_emails/total_emails)
+
+percision = true_positive/(true_positive+false_positive)
+print("percision >> ", percision )
+
+recall = true_positive/(true_positive+false_negative)
+print("recall >> ", recall)
+
+f1 = 2*(percision*recall)/(percision+recall)
+print("f1 >> ", f1)
+print()
