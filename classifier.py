@@ -50,7 +50,7 @@ def print_result(file_summary):
         print(file_summary[file_name]["ham_score"], end="  ")
         print(file_summary[file_name]["spam_score"], end="  ")
         print(file_summary[file_name]["result"])
-        
+
         f.write(str(counter))
         f.write("  ")
         f.write(str(file_name))
@@ -86,39 +86,31 @@ def getWords(file_path):
     for line in f:
         line = line.lower()
         # tokenizing the line. returns an array of lines ending by \n
-        arr = re.split('\[\^a-zA-Z\]',line)
+        words = re.split('[^a-zA-Z]',line)
 
-        for x in arr:
-            # remove the \n at the end of every string
-            result = x.split('\n')
-            # print(result[0])
+        for word in words:
+            word = re.sub(r'[^a-zA-Z]', "", word)
 
-            # split the result on the empty space
-            words = result[0].split(' ')
+            # ignore the word if there is no word on that line
+            # a line was only skipped
+            if len(word) == 0:
+                continue
 
-            for word in words:
-                word = re.sub(r'[^a-zA-Z]', "", word)
-
-                # ignore the word if there is no word on that line 
-                # a line was only skipped
-                if len(word) == 0:
-                    continue
-                
-                # is the word is already in our result dictionay increment frequency
-                # else set frequency to 1
-                '''
-                if word in result_words:
-                    result_words[word] += 1
-                else:
-                    result_words[word] = 1
-                '''
-                ''' # I do not know if we allow for multiple words to show
-                if word in result_words:
-                    continue
-                else:
-                    result_words.append(word)
-                '''
+            # is the word is already in our result dictionay increment frequency
+            # else set frequency to 1
+            '''
+            if word in result_words:
+                result_words[word] += 1
+            else:
+                result_words[word] = 1
+            '''
+            ''' # I do not know if we allow for multiple words to show
+            if word in result_words:
+                continue
+            else:
                 result_words.append(word)
+            '''
+            result_words.append(word)
     f.close()
     return result_words
 
@@ -145,7 +137,7 @@ for file in testing_files:
         classification = "spam"
     else:
         classification = "ham"
-    
+
     if file.find("ham") != -1:
         actual_classification = "ham"
     if file.find("spam") != -1:
@@ -158,8 +150,8 @@ for file in testing_files:
     # true positive
     if actual_classification=="spam" and classification=="spam":
         confusion[0][0] += 1
-    
-    # true negative 
+
+    # true negative
     if actual_classification=="ham" and classification=="ham":
         confusion[1][1] += 1
 
@@ -185,7 +177,7 @@ print_result(file_summary)
 print("confusion matrix")
 print('---------------')
 for row in confusion:
-    print('| %4d | %4d |' %(row[0], row[1])) 
+    print('| %4d | %4d |' %(row[0], row[1]))
 print('---------------')
 
 true_positive = confusion[0][0]
