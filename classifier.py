@@ -89,7 +89,6 @@ def getWords(file_path):
         words = re.split('[^a-zA-Z]',line)
 
         for word in words:
-            word = re.sub(r'[^a-zA-Z]', "", word)
 
             # ignore the word if there is no word on that line
             # a line was only skipped

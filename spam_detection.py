@@ -73,7 +73,7 @@ spam_word_dictionary = {}
 counter = 0
 
 
-for file in ham_training_files:
+for file in training_files:
     path_to_file = os.path.join(training_path, file)
     f = open(path_to_file)
     for line in f:
@@ -84,7 +84,6 @@ for file in ham_training_files:
         word_counter = 0
         for word in words:
             # print(word , end=" - >")
-            word = re.sub(r'[^a-zA-Z]', "", word)
             # print(word)
 
             if len(word) == 0:
@@ -98,65 +97,30 @@ for file in ham_training_files:
             else:
                 word_dictionary[word] = 1
 
-            if word in ham_word_dictionary:
-                x = ham_word_dictionary[word]
-                x += 1
-                ham_word_dictionary[word] = x
-            else:
-                ham_word_dictionary[word] = 1
+            if file.find("ham") != -1:
+                if word in ham_word_dictionary:
+                    x = ham_word_dictionary[word]
+                    x += 1
+                    ham_word_dictionary[word] = x
+                else:
+                    ham_word_dictionary[word] = 1
+                # make word is also added to spam if it does exist
+                # and with 0 probability
+                if word not in spam_word_dictionary:
+                    spam_word_dictionary[word] = 0
 
+            if file.find("spam") != -1:
+                if word in spam_word_dictionary:
+                    x = spam_word_dictionary[word]
+                    x += 1
+                    spam_word_dictionary[word] = x
+                else:
+                    spam_word_dictionary[word] = 1
 
-            # make word is also added to spam if it does exist
-            # and with 0 probability
-            if word not in spam_word_dictionary:
-                spam_word_dictionary[word] = 0
-
-
-            # print(word_counter, end=". ")
-            # print(word, end=" |")
-            # print(len(word))
-            word_counter += 1
-
-        # print(arr)
-
-#    if counter == 0:
-#        break
-
-    counter += 1
-
-for file in spam_training_files:
-    path_to_file = os.path.join(training_path, file)
-    f = open(path_to_file)
-    for line in f:
-        line = line.lower()
-        words = re.split('[^a-zA-Z]',line)
-        #  arr = line.split()
-        word_counter = 0
-        for word in words:
-            word = re.sub(r'[^a-zA-Z]', "", word)
-
-            if len(word) == 0:
-                continue
-
-
-            if word in word_dictionary:
-                x = word_dictionary[word]
-                x += 1
-                word_dictionary[word] = x
-            else:
-                word_dictionary[word] = 1
-
-            if word in spam_word_dictionary:
-                x = spam_word_dictionary[word]
-                x += 1
-                spam_word_dictionary[word] = x
-            else:
-                spam_word_dictionary[word] = 1
-
-            # make word is also added to ham if it does exist
-            # and with 0 probability
-            if word not in ham_word_dictionary:
-                ham_word_dictionary[word] = 0
+                # make word is also added to ham if it does exist
+                # and with 0 probability
+                if word not in ham_word_dictionary:
+                    ham_word_dictionary[word] = 0
 
             # print(word_counter, end=". ")
             # print(word, end=" |")
@@ -169,12 +133,6 @@ for file in spam_training_files:
 #        break
 
     counter += 1
-
-
-#print("len all = ", len(word_dictionary))
-#print("len spam = ", len(spam_word_dictionary))
-#print("len ham = ", len(ham_word_dictionary))
-
 
 
 total_num_words = 0
