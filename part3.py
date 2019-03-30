@@ -57,7 +57,7 @@ for line in f:
 
     if len(line) == 0:
         continue
-
+    print(line)
     stop_words.append(line)
 
 
@@ -108,18 +108,27 @@ def print_model(word_dict, ham_dict, spam_dict, p_ham, p_spam):
 
 
 training_files = []
-ham_training_files = []
-spam_training_files = []
 
 for (dirpath, dirnames, filenames) in walk(training_path):
     training_files.extend(filenames)
 
 
-for i in training_files:
-    if i.find("ham") != -1:
-        ham_training_files.append(i)
-    if i.find("spam") != -1:
-        spam_training_files.append(i)
+
+
+number_of_spam_documents = 0
+number_of_ham_documents = 0
+
+for file in training_files:
+    if file.find("ham") != -1:
+        number_of_ham_documents += 1
+    if file.find("spam") != -1:
+        number_of_spam_documents += 1
+
+# the probabilty of document being ham or spam
+probability_ham = number_of_ham_documents/(number_of_spam_documents+number_of_ham_documents)
+probability_spam = number_of_spam_documents/(number_of_spam_documents+number_of_ham_documents)
+
+
 
 
 word_dictionary = {}
@@ -128,107 +137,48 @@ spam_word_dictionary = {}
 counter = 0
 
 
-for file in ham_training_files:
+
+
+for file in training_files:
     path_to_file = os.path.join(training_path, file)
     f = open(path_to_file)
     for line in f:
         line = line.lower()
-        arr = re.split('\[\^a-zA-Z\]',line)
-        #  arr = line.split()
-        for x in arr:
-            result = x.split('\n')
-            # print(result[0])
+        # print(line, end=" -> ")
+        words = re.split('[^a-zA-Z]',line)
+        # print(words)
+        for word in words:
+            # print(word , end=" - >")
+            # print(word)
 
-            words = result[0].split(' ')
-
-            word_counter = 1
-            for word in words:
+            if len(word) == 0:
+                continue
 
 
-                word = re.sub(r'[^a-zA-Z]', "", word)
+            if word in word_dictionary:
+                x = word_dictionary[word]
+                x += 1
+                word_dictionary[word] = x
+            else:
+                word_dictionary[word] = 1
 
-                if len(word) == 0:
-                    continue
-
-                if apply_word_length_restriction is True:
-                    if len(word) <= 2 or len(word) >= 9:
-                        continue
-
-                if apply_stop_word is True:
-                    if word in stop_words:
-                        # print("word: ", word , " was stopped")
-                        continue
-
-                if word in word_dictionary:
-                    x = word_dictionary[word]
-                    x += 1
-                    word_dictionary[word] = x
-                else:
-                    word_dictionary[word] = 1
-
+            # if the file is a ham file
+            if file.find("ham") != -1:
+                # if the word is already in the ham dictionary increment the frequency
                 if word in ham_word_dictionary:
                     x = ham_word_dictionary[word]
                     x += 1
                     ham_word_dictionary[word] = x
                 else:
                     ham_word_dictionary[word] = 1
-
-
                 # make word is also added to spam if it does exist
                 # and with 0 probability
                 if word not in spam_word_dictionary:
                     spam_word_dictionary[word] = 0
 
-
-                # print(word_counter, end=". ")
-                # print(word, end=" |")
-                # print(len(word))
-                word_counter += 1
-
-        # print(arr)
-
-#    if counter == 0:
-#        break
-
-    counter += 1
-
-for file in spam_training_files:
-    path_to_file = os.path.join(training_path, file)
-    f = open(path_to_file)
-    for line in f:
-        line = line.lower()
-        arr = re.split('\[\^a-zA-Z\]',line)
-        #  arr = line.split()
-        for x in arr:
-            result = x.split('\n')
-            # print(result[0])
-
-            words = result[0].split(' ')
-
-            word_counter = 1
-            for word in words:
-                word = re.sub(r'[^a-zA-Z]', "", word)
-
-                if len(word) == 0:
-                    continue
-
-                if apply_word_length_restriction is True:
-                    if len(word) <= 2 or len(word) >= 9:
-                        continue
-
-                if apply_stop_word is True:
-                    if word in stop_words:
-                        # print("word: ", word , " was stopped")
-                        continue
-
-
-                if word in word_dictionary:
-                    x = word_dictionary[word]
-                    x += 1
-                    word_dictionary[word] = x
-                else:
-                    word_dictionary[word] = 1
-
+            # if the file is a spam file
+            if file.find("spam") != -1:
+                # if the word is already in spam dictionary increment the frequency
                 if word in spam_word_dictionary:
                     x = spam_word_dictionary[word]
                     x += 1
@@ -240,18 +190,6 @@ for file in spam_training_files:
                 # and with 0 probability
                 if word not in ham_word_dictionary:
                     ham_word_dictionary[word] = 0
-
-                # print(word_counter, end=". ")
-                # print(word, end=" |")
-                # print(len(word))
-                word_counter += 1
-
-        # print(arr)
-
-#    if counter == 0:
-#        break
-
-    counter += 1
 
 
 #print("len all = ", len(word_dictionary))
@@ -281,9 +219,6 @@ for i in spam_word_dictionary:
     total_num_spam_words += spam_word_dictionary[i]
 # print("total number of spam words:", total_num_spam_words)
 
-probability_ham = total_num_ham_words/total_num_words
-probability_spam = total_num_spam_words/total_num_words
-
 # print("------------------------------------------------")
 # print("p(ham)", total_num_ham_words/total_num_words)
 # print("p(spam)", total_num_spam_words/total_num_words)
@@ -294,18 +229,18 @@ p_spam = {}
 p_ham = {}
 p_word = {}
 
-number_of_words = len(word_dictionary)
+
 # and len(word_dictionary) = len(ham_word_dictionary) =  len(spam_word_dictionary)
 # because we inserted every word into the other data category and assigned 0 if it did not exist
 
 for i in ham_word_dictionary:
-    p_ham[i] = (ham_word_dictionary[i]+0.5)/(total_num_ham_words+0.5*number_of_words)
+    p_ham[i] = (ham_word_dictionary[i]+0.5)/(total_num_ham_words+0.5*total_num_words)
 
 for j in spam_word_dictionary:
-    p_spam[j] = (spam_word_dictionary[j]+0.5)/(total_num_spam_words+0.5*number_of_words)
+    p_spam[j] = (spam_word_dictionary[j]+0.5)/(total_num_spam_words+0.5*total_num_words)
 
 for k in word_dictionary:
-    p_word[k] = (word_dictionary[k]+0.5)/(total_num_words+0.5*number_of_words)
+    p_word[k] = (word_dictionary[k]+0.5)/(total_num_words+0.5*total_num_words)
 
 
 word_dictionary = alphabetical_sort(word_dictionary)
@@ -388,39 +323,18 @@ def getWords(file_path):
     for line in f:
         line = line.lower()
         # tokenizing the line. returns an array of lines ending by \n
-        arr = re.split('\[\^a-zA-Z\]',line)
+        words = re.split('[^a-zA-Z]',line)
 
-        for x in arr:
-            # remove the \n at the end of every string
-            result = x.split('\n')
-            # print(result[0])
+        for word in words:
 
-            # split the result on the empty space
-            words = result[0].split(' ')
+            # ignore the word if there is no word on that line
+            # a line was only skipped
+            if len(word) == 0:
+                continue
 
-            for word in words:
-                word = re.sub(r'[^a-zA-Z]', "", word)
-
-                # ignore the word if there is no word on that line
-                # a line was only skipped
-                if len(word) == 0:
-                    continue
-
-                # is the word is already in our result dictionay increment frequency
-                # else set frequency to 1
-                '''
-                if word in result_words:
-                    result_words[word] += 1
-                else:
-                    result_words[word] = 1
-                '''
-                ''' # I do not know if we allow for multiple words to show
-                if word in result_words:
-                    continue
-                else:
-                    result_words.append(word)
-                '''
-                result_words.append(word)
+            # is the word is already in our result dictionay increment frequency
+            # else set frequency to 1
+            result_words.append(word)
     f.close()
     return result_words
 

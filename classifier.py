@@ -35,6 +35,7 @@ for i in testing_files:
         spam_testing_files.append(i)
 
 def print_result(file_summary):
+    print_to_console = input("would you like to print file output to the console (0 for no 1 for yes) >")
     f = open("baseline-result.txt", "w+")
 
     # calculate accuracy of the classification
@@ -44,12 +45,13 @@ def print_result(file_summary):
     counter = 0
     for file_name in file_summary:
         counter += 1
-        print(counter, end="  ")
-        print(file_name, end="  ")
-        print(file_summary[file_name]["classification"], end="  ")
-        print(file_summary[file_name]["ham_score"], end="  ")
-        print(file_summary[file_name]["spam_score"], end="  ")
-        print(file_summary[file_name]["result"])
+        if print_to_console == '1':
+            print(counter, end="  ")
+            print(file_name, end="  ")
+            print(file_summary[file_name]["classification"], end="  ")
+            print(file_summary[file_name]["ham_score"], end="  ")
+            print(file_summary[file_name]["spam_score"], end="  ")
+            print(file_summary[file_name]["result"])
 
         f.write(str(counter))
         f.write("  ")
@@ -97,12 +99,7 @@ def getWords(file_path):
 
             # is the word is already in our result dictionay increment frequency
             # else set frequency to 1
-            '''
-            if word in result_words:
-                result_words[word] += 1
-            else:
-                result_words[word] = 1
-            '''
+
             ''' # I do not know if we allow for multiple words to show
             if word in result_words:
                 continue
