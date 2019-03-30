@@ -174,10 +174,12 @@ for file in testing_files:
 print_result(file_summary)
 
 print("confusion matrix")
-print('---------------')
-for row in confusion:
-    print('| %4d | %4d |' %(row[0], row[1]))
-print('---------------')
+print()
+print('      SPAM |  HAM  ')
+print('     --------------')
+print('SPAM| %4d | %4d |'%(confusion[0][0], confusion[0][1]))
+print('HAM | %4d | %4d |' %(confusion[1][0], confusion[1][1]))
+print('     --------------')
 
 true_positive = confusion[0][0]
 false_positive = confusion[0][1]

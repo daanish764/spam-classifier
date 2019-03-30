@@ -53,25 +53,13 @@ def print_result(word_dict, ham_dict, spam_dict, p_ham, p_spam):
 
 
 training_files = []
-ham_training_files = []
-spam_training_files = []
 
 for (dirpath, dirnames, filenames) in walk(training_path):
     training_files.extend(filenames)
 
-
-for i in training_files:
-    if i.find("ham") != -1:
-        ham_training_files.append(i)
-    if i.find("spam") != -1:
-        spam_training_files.append(i)
-
-
 word_dictionary = {}
 ham_word_dictionary = {}
 spam_word_dictionary = {}
-counter = 0
-
 
 for file in training_files:
     path_to_file = os.path.join(training_path, file)
@@ -81,7 +69,6 @@ for file in training_files:
         # print(line, end=" -> ")
         words = re.split('[^a-zA-Z]',line)
         # print(words)
-        word_counter = 0
         for word in words:
             # print(word , end=" - >")
             # print(word)
@@ -121,18 +108,6 @@ for file in training_files:
                 # and with 0 probability
                 if word not in ham_word_dictionary:
                     ham_word_dictionary[word] = 0
-
-            # print(word_counter, end=". ")
-            # print(word, end=" |")
-            # print(len(word))
-            word_counter += 1
-
-        # print(arr)
-
-#    if counter == 0:
-#        break
-
-    counter += 1
 
 
 total_num_words = 0

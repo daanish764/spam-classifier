@@ -57,7 +57,7 @@ for line in f:
 
     if len(line) == 0:
         continue
-    
+
     stop_words.append(line)
 
 
@@ -211,11 +211,11 @@ for file in spam_training_files:
 
                 if len(word) == 0:
                     continue
-                
+
                 if apply_word_length_restriction is True:
                     if len(word) <= 2 or len(word) >= 9:
                         continue
-                
+
                 if apply_stop_word is True:
                     if word in stop_words:
                         # print("word: ", word , " was stopped")
@@ -354,7 +354,7 @@ def print_result(file_summary):
             print(file_summary[file_name]["ham_score"], end="  ")
             print(file_summary[file_name]["spam_score"], end="  ")
             print(file_summary[file_name]["result"])
-        
+
         f.write(str(counter))
         f.write("  ")
         f.write(str(file_name))
@@ -401,11 +401,11 @@ def getWords(file_path):
             for word in words:
                 word = re.sub(r'[^a-zA-Z]', "", word)
 
-                # ignore the word if there is no word on that line 
+                # ignore the word if there is no word on that line
                 # a line was only skipped
                 if len(word) == 0:
                     continue
-                
+
                 # is the word is already in our result dictionay increment frequency
                 # else set frequency to 1
                 '''
@@ -448,7 +448,7 @@ for file in testing_files:
         classification = "spam"
     else:
         classification = "ham"
-    
+
     if file.find("ham") != -1:
         actual_classification = "ham"
     if file.find("spam") != -1:
@@ -461,8 +461,8 @@ for file in testing_files:
     # true positive
     if actual_classification=="spam" and classification=="spam":
         confusion[0][0] += 1
-    
-    # true negative 
+
+    # true negative
     if actual_classification=="ham" and classification=="ham":
         confusion[1][1] += 1
 
@@ -486,10 +486,12 @@ for file in testing_files:
 print_result(file_summary)
 
 print("confusion matrix")
-print('---------------')
-for row in confusion:
-    print('| %4d | %4d |' %(row[0], row[1])) 
-print('---------------')
+print()
+print('      SPAM |  HAM  ')
+print('     --------------')
+print('SPAM| %4d | %4d |'%(confusion[0][0], confusion[0][1]))
+print('HAM | %4d | %4d |' %(confusion[1][0], confusion[1][1]))
+print('     --------------')
 
 true_positive = confusion[0][0]
 false_positive = confusion[0][1]
