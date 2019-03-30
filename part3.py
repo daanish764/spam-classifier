@@ -51,7 +51,6 @@ stop_words = []
 f = open(stop_word_path, 'r')
 
 for line in f:
-    line = line.split('\n')[0]
 
     line = re.sub(r'[^a-zA-Z]', "", line)
 
@@ -110,9 +109,6 @@ training_files = []
 for (dirpath, dirnames, filenames) in walk(training_path):
     training_files.extend(filenames)
 
-
-
-
 number_of_spam_documents = 0
 number_of_ham_documents = 0
 
@@ -143,6 +139,13 @@ for file in training_files:
             if len(word) == 0:
                 continue
 
+            if apply_word_length_restriction is True:
+                if len(word) <= 2 or len(word) >= 9:
+                    continue
+
+            if apply_stop_word is True:
+                if word in stop_words:
+                    continue
 
             if word in word_dictionary:
                 x = word_dictionary[word]
