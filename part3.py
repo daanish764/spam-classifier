@@ -38,13 +38,13 @@ from os import listdir
 from os.path import isfile, join
 from os import walk
 import re
-from collections import defaultdict
+from math import log10
+
 # getting the current path
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
 print("part3.py > Building Naive Bayes Classifier model")
 stop_word_path = os.path.join(dir_path, 'English-Stop-Words.txt')
-
 
 stop_words = []
 
@@ -57,13 +57,11 @@ for line in f:
 
     if len(line) == 0:
         continue
-    print(line)
     stop_words.append(line)
 
 
 
 training_path = os.path.join(dir_path, 'train')
-
 
 '''
 takes in a dictionary of key and vlues (words and frequencies)
@@ -129,27 +127,18 @@ probability_ham = number_of_ham_documents/(number_of_spam_documents+number_of_ha
 probability_spam = number_of_spam_documents/(number_of_spam_documents+number_of_ham_documents)
 
 
-
-
 word_dictionary = {}
 ham_word_dictionary = {}
 spam_word_dictionary = {}
-counter = 0
-
-
 
 
 for file in training_files:
     path_to_file = os.path.join(training_path, file)
-    f = open(path_to_file)
+    f = open(path_to_file, 'r', encoding="latin-1")
     for line in f:
         line = line.lower()
-        # print(line, end=" -> ")
         words = re.split('[^a-zA-Z]',line)
-        # print(words)
         for word in words:
-            # print(word , end=" - >")
-            # print(word)
 
             if len(word) == 0:
                 continue
@@ -192,42 +181,26 @@ for file in training_files:
                     ham_word_dictionary[word] = 0
 
 
-#print("len all = ", len(word_dictionary))
-#print("len spam = ", len(spam_word_dictionary))
-#print("len ham = ", len(ham_word_dictionary))
-
 
 
 total_num_words = 0
 for i in word_dictionary:
-    # print(i, ' ' , word_dictionary[i])
     total_num_words += word_dictionary[i]
-
-# print("total number of words:", total_num_words)
 
 
 total_num_ham_words = 0
 for i in ham_word_dictionary:
-    # print(i, ' ' , ham_word_dictionary[i])
     total_num_ham_words += ham_word_dictionary[i]
-# print("total number of ham words:", total_num_ham_words)
 
 
 total_num_spam_words = 0
 for i in spam_word_dictionary:
-    # print(i, ' ' , ham_word_dictionary[i])
     total_num_spam_words += spam_word_dictionary[i]
-# print("total number of spam words:", total_num_spam_words)
 
-# print("------------------------------------------------")
-# print("p(ham)", total_num_ham_words/total_num_words)
-# print("p(spam)", total_num_spam_words/total_num_words)
-# print("------------------------------------------------")
 
 # the probabilities of each word in its set
 p_spam = {}
 p_ham = {}
-p_word = {}
 
 
 # and len(word_dictionary) = len(ham_word_dictionary) =  len(spam_word_dictionary)
@@ -239,8 +212,6 @@ for i in ham_word_dictionary:
 for j in spam_word_dictionary:
     p_spam[j] = (spam_word_dictionary[j]+0.5)/(total_num_spam_words+0.5*total_num_words)
 
-for k in word_dictionary:
-    p_word[k] = (word_dictionary[k]+0.5)/(total_num_words+0.5*total_num_words)
 
 
 word_dictionary = alphabetical_sort(word_dictionary)
@@ -252,25 +223,20 @@ print_model(word_dictionary, ham_word_dictionary, spam_word_dictionary, p_ham, p
 print("part3.py > Running Naive Bayes Classifier model")
 print("-----------------------------------------------------------")
 
-from math import log10
-
 
 testing_path = os.path.join(dir_path, 'test')
 
 
 testing_files = []
-ham_testing_files = []
-spam_testing_files = []
 
 for (dirpath, dirnames, filenames) in walk(testing_path):
     testing_files.extend(filenames)
 
-for i in testing_files:
-    if i.find("ham") != -1:
-        ham_testing_files.append(i)
-    if i.find("spam") != -1:
-        spam_testing_files.append(i)
 
+'''
+print_result prints the result to correct file
+result_output_file is a dictionary that contains the classification of the file, the ham score, spam score and result
+'''
 def print_result(file_summary):
     f = open(result_output_file, "w+")
 
@@ -315,7 +281,11 @@ def print_result(file_summary):
 
     f.close()
 
-
+'''
+getWords get all the words in a particular file
+file_path is the path of the a file
+it returns the a list of all words (including duplicate to count frequencies later )
+'''
 def getWords(file_path):
     result_words = []
 
@@ -338,8 +308,7 @@ def getWords(file_path):
     f.close()
     return result_words
 
-# is confusion matrix
-
+# the confusion matrix
 confusion = [[0,0],[0,0]]
 
 file_summary = {}
