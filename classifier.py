@@ -7,14 +7,6 @@ from math import log10
 
 from spam_detection import word_dictionary, ham_word_dictionary, spam_word_dictionary, p_ham, p_spam, probability_ham, probability_spam
 
-# print(probability_ham)
-# print(probability_spam)
-# print(len(word_dictionary))
-# print(len(ham_word_dictionary))
-# print(len(spam_word_dictionary))
-# print(len(p_ham))
-# print(len(p_spam))
-
 # getting the current path
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
@@ -35,6 +27,7 @@ for i in testing_files:
         spam_testing_files.append(i)
 
 def print_result(file_summary):
+    print_to_console = input("would you like to print file output to the console (0 for no 1 for yes) >")
     f = open("baseline-result.txt", "w+")
 
     # calculate accuracy of the classification
@@ -44,13 +37,14 @@ def print_result(file_summary):
     counter = 0
     for file_name in file_summary:
         counter += 1
-        print(counter, end="  ")
-        print(file_name, end="  ")
-        print(file_summary[file_name]["classification"], end="  ")
-        print(file_summary[file_name]["ham_score"], end="  ")
-        print(file_summary[file_name]["spam_score"], end="  ")
-        print(file_summary[file_name]["result"])
-        
+        if print_to_console == '1':
+            print(counter, end="  ")
+            print(file_name, end="  ")
+            print(file_summary[file_name]["classification"], end="  ")
+            print(file_summary[file_name]["ham_score"], end="  ")
+            print(file_summary[file_name]["spam_score"], end="  ")
+            print(file_summary[file_name]["result"])
+
         f.write(str(counter))
         f.write("  ")
         f.write(str(file_name))
@@ -86,39 +80,18 @@ def getWords(file_path):
     for line in f:
         line = line.lower()
         # tokenizing the line. returns an array of lines ending by \n
-        arr = re.split('\[\^a-zA-Z\]',line)
+        words = re.split('[^a-zA-Z]',line)
 
-        for x in arr:
-            # remove the \n at the end of every string
-            result = x.split('\n')
-            # print(result[0])
+        for word in words:
 
-            # split the result on the empty space
-            words = result[0].split(' ')
+            # ignore the word if there is no word on that line
+            # a line was only skipped
+            if len(word) == 0:
+                continue
 
-            for word in words:
-                word = re.sub(r'[^a-zA-Z]', "", word)
-
-                # ignore the word if there is no word on that line 
-                # a line was only skipped
-                if len(word) == 0:
-                    continue
-                
-                # is the word is already in our result dictionay increment frequency
-                # else set frequency to 1
-                '''
-                if word in result_words:
-                    result_words[word] += 1
-                else:
-                    result_words[word] = 1
-                '''
-                ''' # I do not know if we allow for multiple words to show
-                if word in result_words:
-                    continue
-                else:
-                    result_words.append(word)
-                '''
-                result_words.append(word)
+            # is the word is already in our result dictionay increment frequency
+            # else set frequency to 1
+            result_words.append(word)
     f.close()
     return result_words
 
@@ -145,7 +118,7 @@ for file in testing_files:
         classification = "spam"
     else:
         classification = "ham"
-    
+
     if file.find("ham") != -1:
         actual_classification = "ham"
     if file.find("spam") != -1:
@@ -158,8 +131,8 @@ for file in testing_files:
     # true positive
     if actual_classification=="spam" and classification=="spam":
         confusion[0][0] += 1
-    
-    # true negative 
+
+    # true negative
     if actual_classification=="ham" and classification=="ham":
         confusion[1][1] += 1
 
@@ -183,10 +156,12 @@ for file in testing_files:
 print_result(file_summary)
 
 print("confusion matrix")
-print('---------------')
-for row in confusion:
-    print('| %4d | %4d |' %(row[0], row[1])) 
-print('---------------')
+print()
+print('      SPAM |  HAM  ')
+print('     --------------')
+print('SPAM| %4d | %4d |'%(confusion[0][0], confusion[0][1]))
+print('HAM | %4d | %4d |' %(confusion[1][0], confusion[1][1]))
+print('     --------------')
 
 true_positive = confusion[0][0]
 false_positive = confusion[0][1]
@@ -195,10 +170,9 @@ true_negative = confusion[1][1]
 
 
 total_emails = confusion[0][0] + confusion[0][1] + confusion[1][0] + confusion[1][1]
-correctly_id_emails = confusion[0][0] + confusion[1][1]
 
-accuracy = correctly_id_emails/total_emails
-print("accuracy >> ", correctly_id_emails/total_emails)
+accuracy = (confusion[0][0] + confusion[1][1])/total_emails
+print("accuracy >> ", accuracy)
 
 percision = true_positive/(true_positive+false_positive)
 print("percision >> ", percision )
