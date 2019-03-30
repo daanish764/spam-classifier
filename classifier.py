@@ -7,14 +7,6 @@ from math import log10
 
 from spam_detection import word_dictionary, ham_word_dictionary, spam_word_dictionary, p_ham, p_spam, probability_ham, probability_spam
 
-# print(probability_ham)
-# print(probability_spam)
-# print(len(word_dictionary))
-# print(len(ham_word_dictionary))
-# print(len(spam_word_dictionary))
-# print(len(p_ham))
-# print(len(p_spam))
-
 # getting the current path
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
@@ -99,13 +91,6 @@ def getWords(file_path):
 
             # is the word is already in our result dictionay increment frequency
             # else set frequency to 1
-
-            ''' # I do not know if we allow for multiple words to show
-            if word in result_words:
-                continue
-            else:
-                result_words.append(word)
-            '''
             result_words.append(word)
     f.close()
     return result_words
@@ -185,10 +170,9 @@ true_negative = confusion[1][1]
 
 
 total_emails = confusion[0][0] + confusion[0][1] + confusion[1][0] + confusion[1][1]
-correctly_id_emails = confusion[0][0] + confusion[1][1]
 
-accuracy = correctly_id_emails/total_emails
-print("accuracy >> ", correctly_id_emails/total_emails)
+accuracy = (confusion[0][0] + confusion[1][1])/total_emails
+print("accuracy >> ", accuracy)
 
 percision = true_positive/(true_positive+false_positive)
 print("percision >> ", percision )
