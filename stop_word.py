@@ -43,8 +43,7 @@ for line in f:
     print('%-20s' %(stop_word_dictionary[word]['word']), end="  ")
     print('%-10s' %(stop_word_dictionary[word]['freq']), end="  ")
     print('%-30s'%(stop_word_dictionary[word]['p_ham']), end="  ")
-    print('%-25s'%stop_word_dictionary[word]['p_spam'], end="  ")
-    print('\n')
+    print('%-25s'%stop_word_dictionary[word]['p_spam'])
 
 
 f.close()
@@ -57,9 +56,10 @@ total_spam_word_freq = 0
 total_ham_word_freq = 0
 
 f.write('%-20s  %-10s  %-30s  %-25s  %s'%("word", "freq", "P(word|ham)", "P(word|spam)", "classification"))
-f.write('\n')
-f.write('\n')
+f.write('\n\n')
+counter = 1
 for word in stop_word_dictionary:
+    f.write('%-4d  '%counter)
     f.write('%-20s  ' %(stop_word_dictionary[word]['word']))
     f.write('%-10s  ' %(stop_word_dictionary[word]['freq']))
     f.write('%-30s  '%(stop_word_dictionary[word]['p_ham']))
@@ -79,8 +79,9 @@ for word in stop_word_dictionary:
 
 
     f.write("\n")
+    counter += 1
 
 f.close()
 
-print('total spam words freq', total_spam_word_freq)
-print('total ham words freq', total_ham_word_freq)
+print('total spam words occurance', total_spam_word_freq)
+print('total ham words occurance', total_ham_word_freq)
