@@ -1,27 +1,28 @@
 # spam-classifier
 
 
-Before running the code, it is necessary to move the
-file English-Stop-Words in the src directory along with
-the test and train folders that contain the emails used
-for testing and training.
+<h3 align="center">Concordia University <br />
+COMP 472: Intro to Artificial Intelligence </h3>
 
-Run the following commands for each part of the project
+## Description
 
+
+Implement a Naive Bayes Classifier in python that trains on a dataset of emails 
+and then classifies the test dataset emails into HAM or SPAM. Add 0.5 smoothing to the naive bayes classifier. Furthermore, construct a confusion matrix showing the result.
+
+
+## Instructions
 
 ### Part 1
 ```
 python spam_detection.py
 ```
-A file "model.txt" will be generated with the output
-
 
 ### Part 2
 
 ```
 python classifier.py
 ```
-A file "baseline-result.txt" will be generated with the output
 
 ### Part 3
 
@@ -29,11 +30,8 @@ A file "baseline-result.txt" will be generated with the output
 ```
 python part3.py -ex2
 ```
-A file "stopword-model.txt" and "stopword-result.txt" will be generated with the output
-
 
 - Experiment 3
 ```
 python part3.py -ex3
 ```
-A file "wordlength-model.txt" and "wordlength-result.txt" will be generated with the output
