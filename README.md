@@ -11,6 +11,10 @@ Implement a Naive Bayes Classifier in python that trains on a dataset of emails
 and then classifies the test dataset emails into HAM or SPAM. Add 0.5 smoothing to the naive bayes classifier. Furthermore, construct a confusion matrix showing the result.
 
 
+## Report 
+
+[report.pdf](https://github.com/daanish93/spam-classifier/blob/master/report.pdf)
+
 ## Instructions
 
 ### Part 1
